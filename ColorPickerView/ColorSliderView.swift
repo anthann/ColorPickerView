@@ -9,7 +9,14 @@
 import UIKit
 
 internal class ColorSliderView: UIControl {
-    public var brightness: CGFloat = 0.5
+    public var brightness: CGFloat = 0.5 {
+        didSet {
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            knobLayer.position = CGPoint(x: brightness * self.bounds.width, y: self.bounds.height / 2.0)
+            CATransaction.commit()
+        }
+    }
     private var hue: CGFloat = 0.0
     private var saturation: CGFloat = 0.0
     private let gradientLayer: CAGradientLayer = CAGradientLayer()
@@ -32,9 +39,6 @@ internal class ColorSliderView: UIControl {
         knobLayer.backgroundColor = UIColor.white.cgColor
         knobLayer.bounds = CGRect(x: 0, y: 0, width: 6.0, height: 22.0)
         self.layer.addSublayer(knobLayer)
-//
-//        let gr = UIPanGestureRecognizer(target: self, action: #selector(panGestureRecognized))
-//        self.addGestureRecognizer(gr)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -55,21 +59,6 @@ internal class ColorSliderView: UIControl {
         let height: CGFloat = 12.0
         gradientLayer.frame = CGRect(x: 0.0, y: self.bounds.height / 2.0 - height / 2.0, width: self.bounds.width, height: height)
         knobLayer.position = CGPoint(x: brightness * self.bounds.width, y: self.bounds.height / 2.0)
-    }
-    
-    @objc private func panGestureRecognized(sender: UIPanGestureRecognizer) {
-        
-        switch sender.state {
-        case .began:
-            fallthrough
-        case .changed:
-            fallthrough
-        case .ended:
-            let position = sender.location(in: self)
-            touchAtPosition(position)
-        default:
-            break
-        }
     }
 }
 
@@ -101,10 +90,6 @@ extension ColorSliderView {
         var brightness = position.x / width
         brightness = min(brightness, 1.0)
         brightness = max(brightness, 0.0)
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        knobLayer.position = CGPoint(x: brightness * self.bounds.width, y: self.bounds.height / 2.0)
-        CATransaction.commit()
         self.brightness = brightness
         self.sendActions(for: .valueChanged)
     }

@@ -9,8 +9,8 @@
 import UIKit
 
 internal class ColorWheelView: UIControl {
-    public var hue: CGFloat = 0.0
-    public var saturation: CGFloat = 0.0
+    private(set) public var hue: CGFloat = 0.0
+    private(set) public var saturation: CGFloat = 0.0
     private lazy var knobLayer: CALayer = {
         let dimension: CGFloat = 32.0
         let layer = CALayer()
@@ -37,10 +37,14 @@ internal class ColorWheelView: UIControl {
     override func layoutSubviews() {
         super.layoutSubviews()
         if knobLayer.position == CGPoint.zero {
-            let width = self.bounds.width
-            let radius = width / 2.0
-            knobLayer.position = CGPoint(x: radius, y: radius)
+            knobLayer.position = positionOfColor(hue: hue, saturation: saturation, width: Int(self.bounds.width))
         }
+    }
+    
+    public func set(hue: CGFloat, saturation: CGFloat) {
+        self.hue = hue
+        self.saturation = saturation
+        knobLayer.position = positionOfColor(hue: hue, saturation: saturation, width: Int(self.bounds.width))
     }
 }
 
@@ -180,6 +184,16 @@ extension ColorWheelView {
             }
         }
         return (CGFloat(hue), saturation)
+    }
+    
+    private func positionOfColor(hue: CGFloat, saturation: CGFloat, width: Int) -> CGPoint {
+        let w = CGFloat(width)
+        let radius = w / 2.0
+        let hypotenuse = saturation * radius
+        let angle = Double(hue) * Double.pi * 2.0
+        let x = CGFloat(cos(angle)) * hypotenuse + radius
+        let y = CGFloat(sin(angle)) * hypotenuse + radius
+        return CGPoint(x: x, y: y)
     }
     
     private func hsb2rgb(hue: CGFloat, saturation: CGFloat, brightness: CGFloat) -> (CGFloat, CGFloat, CGFloat) {

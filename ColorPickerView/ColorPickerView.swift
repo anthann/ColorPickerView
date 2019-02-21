@@ -10,9 +10,29 @@ import UIKit
 import SnapKit
 
 internal class ColorPickerView: UIControl {
-    public var brightness: CGFloat = 0.5
-    public var hue: CGFloat = 0.0
-    public var saturation: CGFloat = 0.0
+    public var color: UIColor {
+        get {
+            return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
+        }
+        set {
+            var _hue: CGFloat = 0.0
+            var _saturation: CGFloat = 0.0
+            var _brightness: CGFloat = 0.0
+            if newValue.getHue(&_hue, saturation: &_saturation, brightness: &_brightness, alpha: nil) {
+                hue = _hue
+                saturation = _saturation
+                brightness = _brightness
+                wheelView.set(hue: _hue, saturation: _saturation)
+                sliderView.brightness = _brightness
+                sliderView.set(hue: _hue, saturation: _saturation)
+                currentColorView.backgroundColor = newValue
+            }
+        }
+    }
+    
+    private var brightness: CGFloat = 0.5
+    private var hue: CGFloat = 0.0
+    private var saturation: CGFloat = 0.0
     
     private lazy var wheelView = ColorWheelView()
     private lazy var sliderView = ColorSliderView()

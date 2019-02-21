@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         let pickerView = ColorPickerView()
+        pickerView.color = UIColor.cyan
         self.view.addSubview(pickerView)
         pickerView.snp.makeConstraints { (make) in
             make.edges.equalTo(self.view.safeAreaLayoutGuide)

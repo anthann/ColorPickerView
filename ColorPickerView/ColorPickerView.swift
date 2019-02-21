@@ -10,6 +10,9 @@ import UIKit
 import SnapKit
 
 internal class ColorPickerView: UIControl {
+    static let preferedWidth: CGFloat = 300.0
+    static let preferedHeight: CGFloat = 12.0 + 50.0 + 8.0 + (ColorPickerView.preferedWidth - 12.0 * 2.0) + 8.0 + 44.0
+    
     public var color: UIColor {
         get {
             return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1.0)
@@ -76,9 +79,7 @@ internal class ColorPickerView: UIControl {
     }
     
     override var intrinsicContentSize: CGSize {
-        let width: CGFloat = 300.0
-        let height = 12.0 + 50.0 + 8.0 + (width - 12.0 * 2.0) + 8.0 + 44.0
-        return CGSize(width: width, height: height)
+        return CGSize(width: ColorPickerView.preferedWidth, height: ColorPickerView.preferedHeight)
     }
     
     @objc private func wheelViewValueChanged(sender: ColorWheelView) {
